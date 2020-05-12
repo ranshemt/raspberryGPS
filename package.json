@@ -1,0 +1,16 @@
+{
+  "name": "raspberrygps",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@serialport/parser-readline": "^9.0.0",
+    "gps": "^0.5.3",
+    "serialport": "^9.0.0"
+  }
+}
