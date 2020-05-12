@@ -7,10 +7,18 @@ const port = new serialPort('/dev/ttyS0', {baudRate: 9600})
 const gps = new GPS()
 const parser = port.pipe(new serialPortParser())
 //
+let protocolsCount = {}
 gps.on('data', data => {
+    if(data.type) {
+        if(protocolsCount.hasOwnProperty(data.type)) {
+            protocolsCount[data.type]++
+        } else {
+            protocolsCount[data.type] = 0
+        }
+    }
     //if(!data.quality) return
     //if(data) console.log(data)
-    if(data.type) console.log(data.type)
+    //if(data.type) console.log(data.type)
 })
 //
 gps.on('GGA', data => {
@@ -20,7 +28,6 @@ gps.on('GGA', data => {
 })
 //
 gps.on('HDT', data => {
-    if(!data.quality) return
     console.log('HDT')
     console.log(data)
 })
@@ -29,4 +36,12 @@ gps.on('HDT', data => {
 console.log('defining the callback for parser.on')
 //every time a data is read from serial port
 //it will be sent to gps for decoding
-parser.on('data', data => gps.update(data))
+let parserOnDataCounter = 0
+parser.on('data', data => {
+    parserOnDataCounter++
+    if(parserOnDataCounter % 15 === 0) {
+        console.log(`parsed data ${parserOnDataCounter} times`)
+        console.log(JSON.stringify(protocolsCount, null, 2))
+    }
+    gps.update(data)
+})
